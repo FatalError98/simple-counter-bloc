@@ -1,8 +1,10 @@
-import 'package:bloc_counter/features/counter/presentation/counter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:gap/gap.dart';
 
-import '../bloc/counter_bloc.dart';
+import '../../../../core/theme/colors/colors.dart';
+import '../counter.dart';
+import '../functions/open_animated_dialog.dart';
 
 class CounterView extends StatelessWidget {
   const CounterView({super.key});
@@ -20,17 +22,19 @@ class CounterView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () => openAnimatedDialog(context),
                       icon: const Icon(
                         Icons.info_outline_rounded,
-                        size: 30,
+                        size: 32,
+                        color: kPrimaryColor,
                       ),
                     ),
                     IconButton(
                       onPressed: () {},
                       icon: const Icon(
                         Icons.settings,
-                        size: 30,
+                        size: 32,
+                        color: kPrimaryColor,
                       ),
                     ),
                     IconButton(
@@ -38,34 +42,47 @@ class CounterView extends StatelessWidget {
                           context.read<CounterBloc>().add(ResetEvent()),
                       icon: const Icon(
                         Icons.refresh_rounded,
-                        size: 30,
+                        size: 32,
+                        color: kPrimaryColor,
                       ),
                     ),
                   ],
                 ),
-                const Spacer(),
+                Gap(MediaQuery.of(context).size.width * 0.4),
                 BlocBuilder<CounterBloc, CounterState>(
                   builder: (context, state) {
                     return Text(
                       '${state.countValue}',
                       style: const TextStyle(
-                        fontSize: 150,
+                        fontSize: 116,
                         color: Color(0xff333233),
                       ),
                     );
                   },
                 ),
-                const Spacer(),
+                Gap(MediaQuery.of(context).size.width * 0.3),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    IconButton.outlined(
-                      onPressed: () =>
-                          context.read<CounterBloc>().add(DecrementEvent()),
-                      icon: const Icon(
-                        Icons.remove,
-                        size: 40,
-                      ),
+                    BlocBuilder<CounterBloc, CounterState>(
+                      builder: (context, state) {
+                        return IconButton.outlined(
+                          onPressed: () => state.countValue > 0
+                              ? context
+                                  .read<CounterBloc>()
+                                  .add(DecrementEvent())
+                              : null,
+                          icon: const Icon(
+                            Icons.remove,
+                            size: 40,
+                          ),
+                        )
+                            .animate(
+                              target: state.countValue > 0 ? 1 : 0,
+                            )
+                            .fadeIn(
+                                duration: const Duration(milliseconds: 200));
+                      },
                     ),
                     IconButton.outlined(
                       onPressed: () =>
@@ -77,32 +94,10 @@ class CounterView extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 45,
-                )
               ],
             ),
           ),
         ),
-        // floatingActionButton: Column(
-        //   mainAxisAlignment: MainAxisAlignment.end,
-        //   crossAxisAlignment: CrossAxisAlignment.end,
-        //   children: [
-        //     FloatingActionButton(
-        //       key: const Key('counterView_increment_floatingActionButton'),
-        //       child: const Icon(Icons.add),
-        //       onPressed: () => context.read<CounterCubit>().increment(),
-        //     ),
-        //     const SizedBox(
-        //       height: 8,
-        //     ),
-        //     FloatingActionButton(
-        //       key: const Key('counterView_decrement_floatingActionButton'),
-        //       child: const Icon(Icons.remove),
-        //       onPressed: () => context.read<CounterCubit>().decrement(),
-        //     ),
-        //   ],
-        // ),
       ),
     );
   }
