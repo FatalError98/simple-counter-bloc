@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'counter/counter.dart';
+import 'features/counter/presentation/counter.dart';
 
 class CounterApp extends MaterialApp {
   CounterApp({super.key})

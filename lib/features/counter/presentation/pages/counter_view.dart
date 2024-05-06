@@ -1,6 +1,8 @@
-import 'package:bloc_counter/counter/cubit/counter_cubit.dart';
+import 'package:bloc_counter/features/counter/presentation/counter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../bloc/counter_bloc.dart';
 
 class CounterView extends StatelessWidget {
   const CounterView({super.key});
@@ -32,7 +34,8 @@ class CounterView extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                      onPressed: () => context.read<CounterCubit>().reset(),
+                      onPressed: () =>
+                          context.read<CounterBloc>().add(ResetEvent()),
                       icon: const Icon(
                         Icons.refresh_rounded,
                         size: 30,
@@ -41,10 +44,10 @@ class CounterView extends StatelessWidget {
                   ],
                 ),
                 const Spacer(),
-                BlocBuilder<CounterCubit, int>(
+                BlocBuilder<CounterBloc, CounterState>(
                   builder: (context, state) {
                     return Text(
-                      '$state',
+                      '${state.countValue}',
                       style: const TextStyle(
                         fontSize: 150,
                         color: Color(0xff333233),
@@ -57,14 +60,16 @@ class CounterView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     IconButton.outlined(
-                      onPressed: () => context.read<CounterCubit>().decrement(),
+                      onPressed: () =>
+                          context.read<CounterBloc>().add(DecrementEvent()),
                       icon: const Icon(
                         Icons.remove,
                         size: 40,
                       ),
                     ),
                     IconButton.outlined(
-                      onPressed: () => context.read<CounterCubit>().increment(),
+                      onPressed: () =>
+                          context.read<CounterBloc>().add(IncrementEvent()),
                       icon: const Icon(
                         Icons.add,
                         size: 40,
