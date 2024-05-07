@@ -42,7 +42,7 @@ void openAnimatedDialog(BuildContext context) {
       ],
     )
         .animate()
-        .fadeIn(delay: const Duration(milliseconds: 240))
+        .fade(delay: const Duration(milliseconds: 240))
         .moveY(duration: const Duration(milliseconds: 240)),
   );
 }

@@ -7,19 +7,25 @@ class CounterBloc extends Bloc<CounterEvent, CounterState> {
   CounterBloc() : super(const CounterInitial()) {
     on<IncrementEvent>(
       (event, emit) => emit(
-        CounterUpdate(countValue: state.countValue + 1),
+        CounterUpdate(
+          countValue: state.countValue + 1,
+        ),
       ),
     );
 
     on<DecrementEvent>(
       (event, emit) => emit(
-        CounterUpdate(countValue: state.countValue - 1),
+        CounterUpdate(
+          countValue: state.countValue - 1,
+        ),
       ),
     );
 
     on<ResetEvent>(
       (event, emit) => emit(
-        CounterUpdate(countValue: state.countValue),
+        const CounterUpdate(
+          countValue: 0,
+        ),
       ),
     );
   }

@@ -1,5 +1,7 @@
+import 'package:bloc_counter/features/counter/presentation/bloc/bloc_barrel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../core/theme/colors/colors.dart';
@@ -11,6 +13,10 @@ class CounterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Animate.restartOnHotReload = true;
+    double test = 1.0;
+    double test2 = 0.0;
+    bool isPressed = true;
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -49,7 +55,14 @@ class CounterView extends StatelessWidget {
                   ],
                 ),
                 Gap(MediaQuery.of(context).size.width * 0.4),
-                BlocBuilder<CounterBloc, CounterState>(
+                BlocConsumer<CounterBloc, CounterState>(
+                  listener: (context, state) {
+                    if (test == 0) {
+                      test = 1;
+                    } else {
+                      test = 0;
+                    }
+                  },
                   builder: (context, state) {
                     return Text(
                       '${state.countValue}',
@@ -57,7 +70,13 @@ class CounterView extends StatelessWidget {
                         fontSize: 116,
                         color: Color(0xff333233),
                       ),
-                    );
+                    )
+                        .animate(
+                            target: test,
+                            onComplete: (controller) {
+                              controller.reverse();
+                            })
+                        .scaleXY(end: 1.1);
                   },
                 ),
                 Gap(MediaQuery.of(context).size.width * 0.3),
@@ -85,8 +104,11 @@ class CounterView extends StatelessWidget {
                       },
                     ),
                     IconButton.outlined(
-                      onPressed: () =>
-                          context.read<CounterBloc>().add(IncrementEvent()),
+                      onPressed: () {
+                        print(test);
+
+                        context.read<CounterBloc>().add(IncrementEvent());
+                      },
                       icon: const Icon(
                         Icons.add,
                         size: 40,
