@@ -1,15 +1,14 @@
-import 'package:bloc_counter/features/counter/presentation/bloc/bloc_barrel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../core/theme/colors/colors.dart';
 import '../counter.dart';
 import '../functions/open_animated_dialog.dart';
+import '../widgets/outline_icon_button.dart';
+import '../widgets/top_option_button.dart';
 
 class CounterView extends StatefulWidget {
-  CounterView({super.key});
+  const CounterView({super.key});
 
   @override
   State<CounterView> createState() => _CounterViewState();
@@ -47,30 +46,18 @@ class _CounterViewState extends State<CounterView>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(
-                      onPressed: () => openAnimatedDialog(context),
-                      icon: const Icon(
-                        Icons.info_outline_rounded,
-                        size: 32,
-                        color: kPrimaryColor,
-                      ),
+                    TopOptionButton(
+                      function: () => openAnimatedDialog(context),
+                      icon: Icons.info_outline_rounded,
                     ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.settings,
-                        size: 32,
-                        color: kPrimaryColor,
-                      ),
+                    TopOptionButton(
+                      function: () {},
+                      icon: Icons.settings,
                     ),
-                    IconButton(
-                      onPressed: () =>
+                    TopOptionButton(
+                      function: () =>
                           context.read<CounterBloc>().add(ResetEvent()),
-                      icon: const Icon(
-                        Icons.refresh_rounded,
-                        size: 32,
-                        color: kPrimaryColor,
-                      ),
+                      icon: Icons.refresh_rounded,
                     ),
                   ],
                 ),
@@ -98,34 +85,24 @@ class _CounterViewState extends State<CounterView>
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     BlocBuilder<CounterBloc, CounterState>(
-                      builder: (context, state) {
-                        return IconButton.outlined(
-                          onPressed: () => state.countValue > 0
-                              ? context
-                                  .read<CounterBloc>()
-                                  .add(DecrementEvent())
-                              : null,
-                          icon: const Icon(
-                            Icons.remove,
-                            size: 40,
+                      builder: (context, state) => OutlineIconButton(
+                        function: () => state.countValue > 0
+                            ? context.read<CounterBloc>().add(DecrementEvent())
+                            : null,
+                        icon: Icons.remove,
+                      )
+                          .animate(
+                            target: state.countValue > 0 ? 1 : 0,
+                          )
+                          .fadeIn(
+                            duration: const Duration(milliseconds: 200),
                           ),
-                        )
-                            .animate(
-                              target: state.countValue > 0 ? 1 : 0,
-                            )
-                            .fadeIn(
-                                duration: const Duration(milliseconds: 200));
-                      },
                     ),
-                    IconButton.outlined(
-                      onPressed: () {
-                        context.read<CounterBloc>().add(IncrementEvent());
-                      },
-                      icon: const Icon(
-                        Icons.add,
-                        size: 40,
-                      ),
-                    ),
+                    OutlineIconButton(
+                      function: () =>
+                          context.read<CounterBloc>().add(IncrementEvent()),
+                      icon: Icons.add,
+                    )
                   ],
                 ),
               ],
