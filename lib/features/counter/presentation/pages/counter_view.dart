@@ -8,15 +8,35 @@ import '../../../../core/theme/colors/colors.dart';
 import '../counter.dart';
 import '../functions/open_animated_dialog.dart';
 
-class CounterView extends StatelessWidget {
-  const CounterView({super.key});
+class CounterView extends StatefulWidget {
+  CounterView({super.key});
+
+  @override
+  State<CounterView> createState() => _CounterViewState();
+}
+
+class _CounterViewState extends State<CounterView>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1));
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     Animate.restartOnHotReload = true;
-    double test = 1.0;
-    double test2 = 0.0;
-    bool isPressed = true;
+
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -55,15 +75,9 @@ class CounterView extends StatelessWidget {
                   ],
                 ),
                 Gap(MediaQuery.of(context).size.width * 0.4),
-                BlocConsumer<CounterBloc, CounterState>(
-                  listener: (context, state) {
-                    if (test == 0) {
-                      test = 1;
-                    } else {
-                      test = 0;
-                    }
-                  },
+                BlocBuilder<CounterBloc, CounterState>(
                   builder: (context, state) {
+                    _controller.forward();
                     return Text(
                       '${state.countValue}',
                       style: const TextStyle(
@@ -72,11 +86,11 @@ class CounterView extends StatelessWidget {
                       ),
                     )
                         .animate(
-                            target: test,
-                            onComplete: (controller) {
-                              controller.reverse();
-                            })
-                        .scaleXY(end: 1.1);
+                            controller: _controller,
+                            onComplete: (_) => _controller.reverse())
+                        .scaleXY(
+                            end: 1.1,
+                            duration: const Duration(milliseconds: 150));
                   },
                 ),
                 Gap(MediaQuery.of(context).size.width * 0.3),
@@ -105,8 +119,6 @@ class CounterView extends StatelessWidget {
                     ),
                     IconButton.outlined(
                       onPressed: () {
-                        print(test);
-
                         context.read<CounterBloc>().add(IncrementEvent());
                       },
                       icon: const Icon(
